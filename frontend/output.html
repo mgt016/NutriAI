@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriAI - Food Analysis</title>
+    <link rel="stylesheet" href="output-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .sidebar {
+            background-color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #eee;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
+
+        .logo img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .nav-items {
+            list-style: none;
+        }
+
+        .nav-items li {
+            padding: 12px 20px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .nav-items li:hover {
+            background-color: rgba(0, 102, 255, 0.1);
+        }
+
+        .nav-items li.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .logout {
+            margin-top: auto;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: color var(--transition-speed) ease;
+        }
+
+        .logout:hover {
+            color: var(--primary-color);
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="sidebar">
+        <div class="logo">
+            <img src="images\logo1.jpg" alt="NutriAI Logo">
+            <span>NutriAI</span>
+        </div>
+        <ul class="nav-items">
+            <li data-page="index.html"><i class="fas fa-chart-pie"></i> Overview</li>
+            <li data-page="diet.html"><i class="fas fa-utensils"></i> My Diet</li>
+            <li data-page="bmr.html"><i class="fas fa-heartbeat"></i> BMR</li>
+            <li data-page="profile.html"><i class="fas fa-user"></i> Profile</li>
+            <li data-page="settings.html"><i class="fas fa-cog"></i> Settings</li>
+            <li data-page="help.html"><i class="fas fa-question-circle"></i> Help Center</li>
+        </ul>
+        <div class="logout">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="header">
+            <h1>Food Analysis</h1>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="upload-section">
+                <div class="upload-card">
+                    <h2>Upload Food Image</h2>
+                    <form id="uploadForm" class="upload-form">
+                        <div class="file-input-wrapper">
+                            <input type="file" id="imageInput" accept="image/*" required>
+                            <label for="imageInput" class="file-label">Choose Image</label>
+                        </div>
+                        <button type="submit" class="submit-btn">Analyze Food</button>
+                    </form>
+                    <p id="status" class="status-message"></p>
+                </div>
+
+                <div id="previewContainer" class="preview-container">
+                    <h2>Image Preview</h2>
+                    <div class="image-preview">
+                        <img id="previewImage" src="" alt="Uploaded Image">
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-section">
+                <h2>Nutritional Analysis</h2>
+                <div id="foodDetails" class="food-details"></div>
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <script>
+        const imageInput = document.getElementById("imageInput");
+        const previewContainer = document.getElementById("previewContainer");
+        const previewImage = document.getElementById("previewImage");
+        const fileLabel = document.querySelector(".file-label");
+
+        imageInput.addEventListener("change", function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewContainer.style.display = "block";
+                    fileLabel.textContent = file.name;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        document.getElementById("uploadForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+            const fileInput = document.getElementById("imageInput");
+            const statusElement = document.getElementById("status");
+
+            if (fileInput.files.length === 0) {
+                statusElement.textContent = "Please select an image";
+                statusElement.className = "status-message error";
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append("image", fileInput.files[0]);
+
+            try {
+                statusElement.textContent = "Analyzing image...";
+                statusElement.className = "status-message loading";
+
+                const response = await fetch("http://127.0.0.1:5000/upload", {
+                    method: "POST",
+                    body: formData
+                });
+                const result = await response.json();
+
+                statusElement.textContent = "Analysis complete!";
+                statusElement.className = "status-message success";
+                displayFoodDetails(result);
+            } catch (error) {
+                console.error("Error analyzing image:", error);
+                statusElement.textContent = "Analysis failed. Please try again.";
+                statusElement.className = "status-message error";
+            }
+        });
+
+        function displayFoodDetails(data) {
+            const foodContainer = document.getElementById("foodDetails");
+            foodContainer.innerHTML = "";
+
+            if (!data.food_details || data.food_details.length === 0) {
+                foodContainer.innerHTML = "<p class='no-results'>No food detected in the image.</p>";
+                return;
+            }
+
+            data.food_details.forEach(food => {
+                const foodItem = document.createElement("div");
+                foodItem.classList.add("food-item");
+
+                foodItem.innerHTML = `
+                    <div class="food-header">
+                        <h3>${food.food_name}</h3>
+                        
+                    </div>
+                    <div class="nutrition-grid">
+                        <div class="nutrition-item">
+                            <span class="label">Calories</span>
+                            <span class="value">${food.energy_kcal.toFixed(1)} kcal</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="label">Carbs</span>
+                            <span class="value">${food.carb_g.toFixed(1)}g</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="label">Protein</span>
+                            <span class="value">${food.protein_g.toFixed(1)}g</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="label">Fat</span>
+                            <span class="value">${food.fat_g.toFixed(1)}g</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="label">Fiber</span>
+                            <span class="value">${food.fibre_g.toFixed(1)}g</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="label">Calcium</span>
+                            <span class="value">${food.calcium_mg.toFixed(1)}mg</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="label">Iron</span>
+                            <span class="value">${food.iron_mg.toFixed(1)}mg</span>
+                        </div>
+                        <div class="nutrition-item">
+                            <span class="label">Potassium</span>
+                            <span class="value">${food.potassium_mg.toFixed(1)}mg</span>
+                        </div>
+                    </div>
+                `;
+
+                foodContainer.appendChild(foodItem);
+            });
+        }
+    </script>
+</body>
+</html>

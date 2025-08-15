@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriAI - Overview</title>
+    <link rel="stylesheet" href="index-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <img src="images\logo1.jpg" alt="NutriAI Logo">
+                <span>NutriAI</span>
+            </div>
+            <ul class="nav-items">
+                <li data-page="index.html" class="active"><i class="fas fa-chart-pie"></i> Overview</li>
+                <li data-page="diet.html"><i class="fas fa-utensils"></i> My Diet</li>
+                <li data-page="bmr.html"><i class="fas fa-heartbeat"></i> BMR</li>
+                <li data-page="profile.html"><i class="fas fa-user"></i> Profile</li>
+                <li data-page="settings.html"><i class="fas fa-cog"></i> Settings</li>
+                <li data-page="help.html"><i class="fas fa-question-circle"></i> Help Center</li>
+            </ul>
+            <div class="logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="user-actions">
+                    <span class="notification"><i class="fas fa-bell"></i></span>
+                    <span class="more-options"><i class="fas fa-ellipsis-v"></i></span>
+                </div>
+            </header>
+
+            <div class="content">
+                <h1>Overview</h1>
+                <p class="welcome">Hello Thomas, Welcome!</p>
+
+                <div class="nutrition-section">
+                    <div class="nutrition-header">
+                        <h2>Introduction to Nutrition</h2>
+                        <div class="nutrition-icon">
+                            <i class="fas fa-apple-alt"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="nutrition-intro">
+                        <p>Nutrition is essential for maintaining overall health, supporting growth, and ensuring the proper functioning of your body. A well-balanced diet provides the necessary nutrients, including macronutrients and micronutrients, to keep you energized and healthy.</p>
+                    </div>
+                    
+                    <div class="macro-cards">
+                        <div class="macro-card carbs">
+                            <div class="macro-icon">
+                                <i class="fas fa-bread-slice"></i>
+                            </div>
+                            <h3>Carbohydrates</h3>
+                            <p>Your body's primary energy source, found in bread, pasta, rice, and fruits. Carbohydrates break down into glucose to fuel muscles and brain function.</p>
+                        </div>
+                        
+                        <div class="macro-card protein">
+                            <div class="macro-icon">
+                                <i class="fas fa-drumstick-bite"></i>
+                            </div>
+                            <h3>Proteins</h3>
+                            <p>Essential for building and repairing tissues, producing enzymes and hormones. Found in meats, fish, eggs, and legumes.</p>
+                        </div>
+                        
+                        <div class="macro-card fats">
+                            <div class="macro-icon">
+                                <i class="fas fa-cheese"></i>
+                            </div>
+                            <h3>Fats</h3>
+                            <p>Crucial for energy storage, cell structure, and vitamin absorption. Healthy fats from avocados, nuts, and olive oil support heart health.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="nutrition-footer">
+                        <div class="info-box">
+                            <h4>Micronutrients Matter</h4>
+                            <p>Vitamins and minerals play vital roles in maintaining body functions, supporting immunity, and promoting growth. A balanced diet incorporating fiber aids digestion and helps regulate blood sugar levels.</p>
+                        </div>
+                        
+                        <div class="info-box">
+                            <h4>Balanced Nutrition</h4>
+                            <p>Achieving the right balance of these nutrients is key to staying fit, active, and healthy. Proper nutrition also plays an important role in weight management, muscle gain, and overall wellness.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Profile Sidebar -->
+        <aside class="profile-sidebar">
+            <div class="profile-card">
+                
+                <div class="profile-info">
+                    <div class="info-item">
+                        <label>Name:</label>
+                        <span class="name">Thomas Edison</span>
+                    </div>
+                    <div class="info-item">
+                        <label>Email:</label>
+                        <span class="email"><a href="/cdn-cgi/l/email-protection" class="_cf_email_" data-cfemail="5125393e3c302211223825347f323e3c">[email&#160;protected]</a></span>
+                    </div>
+                    <div class="info-item">
+                        <label>Phone:</label>
+                        <span class="phone">(60) 12 345 6789</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="diet-plan.html" class="primary-btn">Create Diet Plan</a>
+                <a href="maintenance-calorie.html" class="secondary-btn">Calculate Maintenance Calorie</a>
+                <a href="output.html" class="secondary-btn">Identify Meal</a>
+                <a href="food.html" class="secondary-btn">Meal Lookup</a>
+            </div>
+        </aside>
+    </div>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

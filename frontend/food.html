@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriSearch - Food Information</title>
+    <link rel="stylesheet" href="food-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .sidebar {
+            background-color: white;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #eee;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 40px;
+        }
+
+        .logo img {
+            width: 30px;
+            height: 30px;
+        }
+
+        .nav-items {
+            list-style: none;
+        }
+
+        .nav-items li {
+            padding: 12px 20px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .nav-items li:hover {
+            background-color: rgba(0, 102, 255, 0.1);
+        }
+
+        .nav-items li.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .logout {
+            margin-top: auto;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: color var(--transition-speed) ease;
+        }
+
+        .logout:hover {
+            color: var(--primary-color);
+        }
+
+    </style>
+</head>
+<body>
+    
+    <nav class="sidebar">
+        <div class="logo">
+            <img src="images\logo1.jpg" alt="NutriAI Logo">
+            <span>NutriAI</span>
+        </div>
+        <ul class="nav-items">
+            <li data-page="index.html" ><i class="fas fa-chart-pie"></i> Overview</li>
+            <li data-page="diet.html"><i class="fas fa-utensils"></i> My Diet</li>
+            <li data-page="bmr.html"><i class="fas fa-heartbeat"></i> BMR</li>
+            <li data-page="profile.html"><i class="fas fa-user"></i> Profile</li>
+            <li data-page="settings.html"><i class="fas fa-cog"></i> Settings</li>
+            <li data-page="help.html"><i class="fas fa-question-circle"></i> Help Center</li>
+        </ul>
+        <div class="logout">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </div>
+    </nav>
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <h1>Search Nutritional Information</h1>
+
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" 
+                       id="searchInput" 
+                       list="foodList"
+                       placeholder="Search for any food..." 
+                       class="search-input"
+                       autocomplete="off">
+                <datalist id="foodList">
+                    <!-- Options will be populated dynamically -->
+                </datalist>
+                <button class="search-button" id="searchButton">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"/>
+                        <path d="m21 21-4.3-4.3"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Status Message -->
+            <p id="status" class="status-message"></p>
+
+            <!-- Results Card -->
+            <div class="results-card" id="foodDetails" style="display: none;">
+                <div class="card-header">
+                    <h2 id="foodName"></h2>
+                    <p>Nutritional information per 100g serving</p>
+                </div>
+
+                <div class="nutrition-grid" id="foodTableBody">
+                    <!-- Nutrition items will be dynamically inserted here -->
+                </div>
+
+                
+            </div>
+        </div>
+    </main>
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+    const searchInput = document.getElementById("searchInput");
+    const searchButton = document.getElementById("searchButton");
+    const statusText = document.getElementById("status");
+    const foodDetailsDiv = document.getElementById("foodDetails");
+    const foodNameHeading = document.getElementById("foodName");
+    const nutritionGrid = document.getElementById("foodTableBody");
+    const foodList = document.getElementById("foodList");
+
+    let foodNames = [];
+
+    // Function to create a nutrition item element
+    function createNutritionItem(label, value) {
+        const div = document.createElement("div");
+        div.className = "nutrition-item";
+        div.innerHTML = `
+            <span class="label">${label}</span>
+            <span class="value">${value}</span>
+        `;
+        return div;
+    }
+
+    // Function to populate datalist with food options
+    function populateFoodList(foods) {
+        foodList.innerHTML = ''; // Clear existing options
+        foods.forEach(food => {
+            const option = document.createElement("option");
+            option.value = food;
+            foodList.appendChild(option);
+        });
+    }
+
+    // Load initial food data
+    try {
+        const response = await fetch("http://127.0.0.1:5000/food");
+        const data = await response.json();
+
+        if (!data.food_names || !Array.isArray(data.food_names)) {
+            throw new Error("Invalid API response format");
+        }
+
+        foodNames = data.food_names;
+        populateFoodList(foodNames);
+        statusText.textContent = "Ready to search!";
+    } catch (error) {
+        console.error("Error fetching data:", error);
+        statusText.textContent = "Failed to load food data!";
+    }
+
+    // Handle search input validation
+    searchInput.addEventListener("input", () => {
+        statusText.textContent = "";
+    });
+
+    searchInput.addEventListener("change", () => {
+        if (searchInput.value && !foodNames.includes(searchInput.value)) {
+            statusText.textContent = "Invalid food item! Please choose from the list.";
+            searchInput.value = "";
+        }
+    });
+
+    // Handle search button click
+    searchButton.addEventListener("click", async () => {
+        const selectedFood = searchInput.value.trim();
+
+        if (!selectedFood) {
+            statusText.textContent = "Please enter a food item!";
+            return;
+        }
+
+        if (!foodNames.includes(selectedFood)) {
+            statusText.textContent = "Please select a valid food item!";
+            return;
+        }
+
+        statusText.textContent = "Fetching food details...";
+
+        try {
+            const response = await fetch(`http://127.0.0.1:5000/food/details?name=${encodeURIComponent(selectedFood)}`);
+            const data = await response.json();
+
+            if (response.ok) {
+                displayFoodDetails(data);
+                statusText.textContent = "";
+            } else {
+                foodDetailsDiv.style.display = "none";
+                statusText.textContent = "Error fetching food details!";
+            }
+        } catch (error) {
+            console.error("Error fetching details:", error);
+            statusText.textContent = "Failed to fetch food details!";
+            foodDetailsDiv.style.display = "none";
+        }
+    });
+
+    // Handle Enter key press in search input
+    searchInput.addEventListener("keypress", (event) => {
+        if (event.key === "Enter") {
+            searchButton.click();
+        }
+    });
+
+    // Display food details in the card
+    function displayFoodDetails(data) {
+        foodDetailsDiv.style.display = "block";
+        foodNameHeading.textContent = data.food_name;
+        nutritionGrid.innerHTML = "";
+
+        const nutritionItems = {
+            "Calories": `${data.energy_kcal?.toFixed(1)} kcal`,
+            "Protein": `${data.protein_g?.toFixed(1)}g`,
+            "Carbohydrates": `${data.carb_g?.toFixed(1)}g`,
+            "Fat": `${data.fat_g?.toFixed(1)}g`,
+            "Fiber": `${data.fibre_g?.toFixed(1)}g`
+        };
+
+        // Create and append nutrition items
+        Object.entries(nutritionItems).forEach(([label, value]) => {
+            if (value && !value.includes("NaN")) {
+                nutritionGrid.appendChild(createNutritionItem(label, value));
+            }
+        });
+    }
+});
+    </script>
+</body>
+</html>

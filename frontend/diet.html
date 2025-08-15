@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriAI - My Diet</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Only meal plan specific styles */
+        .plan-navigation {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .plan-nav-btn {
+            padding: 0.5rem 1rem;
+            background: #5a67d8;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .plan-nav-btn:hover {
+            background: #4c51bf;
+        }
+
+        .plan-nav-btn.active {
+            background: #4c51bf;
+        }
+
+        .plan-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .days-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .day-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+        }
+
+        .day-header {
+            font-size: 1.25rem;
+            color: #4a5568;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .meal-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid #ff9800;
+        }
+
+        .meal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .meal-type {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .calories {
+            color: #ff9800;
+            font-weight: 500;
+        }
+
+        .nutrition-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            background: #f7fafc;
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin: 0.5rem 0;
+        }
+
+        .nutrient {
+            text-align: center;
+        }
+
+        .nutrient-label {
+            font-size: 0.75rem;
+            color: #718096;
+        }
+
+        .nutrient-value {
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .meal-items {
+            margin-top: 0.75rem;
+        }
+
+        .meal-items ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .meal-items li {
+            padding: 0.25rem 0;
+            color: #4a5568;
+            font-size: 0.875rem;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .meal-items li:last-child {
+            border-bottom: none;
+        }
+
+        @media (max-width: 768px) {
+            .days-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Original Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <img src="images\logo1.jpg" alt="NutriAI Logo">
+                <span>NutriAI</span>
+            </div>
+            <ul class="nav-items">
+                <li data-page="index.html" ><i class="fas fa-chart-pie"></i> Overview</li>
+                <li data-page="diet.html" class="active"><i class="fas fa-utensils"></i> My Diet</li>
+                <li data-page="bmr.html"><i class="fas fa-heartbeat"></i> BMR</li>
+                <li data-page="profile.html"><i class="fas fa-user"></i> Profile</li>
+                <li data-page="settings.html"><i class="fas fa-cog"></i> Settings</li>
+                <li data-page="help.html"><i class="fas fa-question-circle"></i> Help Center</li>
+            </ul>
+            <div class="logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="user-actions">
+                    <span class="notification"><i class="fas fa-bell"></i></span>
+                    <span class="more-options"><i class="fas fa-ellipsis-v"></i></span>
+                   
+                </div>
+            </header>
+
+            <div class="content">
+                <h1>My Diet</h1>
+                <div class="plan-navigation"></div>
+                <div class="plans-container"></div>
+            </div>
+        </main>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", async () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get("userId");
+            const plansContainer = document.querySelector(".plans-container");
+            const planNavigation = document.querySelector(".plan-navigation");
+
+            if (!userId) {
+                plansContainer.innerHTML = "<p>Error: User ID not found in the URL.</p>";
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:5550/meal-plans/${userId}`);
+                if (!response.ok) throw new Error(`Failed to fetch meal plans (Status: ${response.status})`);
+                const mealPlans = await response.json();
+
+                if (!mealPlans || mealPlans.length === 0) {
+                    plansContainer.innerHTML = "<p>No meal plans found.</p>";
+                    return;
+                }
+
+                // Create navigation buttons
+                mealPlans.forEach((plan, index) => {
+                    const button = document.createElement("button");
+                    button.classList.add("plan-nav-btn");
+                    button.textContent = `Meal Plan ${index + 1}`;
+                    if (index === 0) button.classList.add("active");
+                    button.addEventListener("click", () => {
+                        document.querySelectorAll(".plan-nav-btn").forEach(btn => btn.classList.remove("active"));
+                        button.classList.add("active");
+                        document.querySelectorAll(".plan-card").forEach(card => {
+                            card.style.display = card.dataset.planIndex === index.toString() ? "block" : "none";
+                        });
+                    });
+                    planNavigation.appendChild(button);
+                });
+
+                // Create plan cards
+                mealPlans.forEach((plan, planIndex) => {
+                    const planCard = document.createElement("div");
+                    planCard.classList.add("plan-card");
+                    planCard.dataset.planIndex = planIndex;
+                    planCard.style.display = planIndex === 0 ? "block" : "none";
+
+                    const daysGrid = document.createElement("div");
+                    daysGrid.classList.add("days-grid");
+
+                    Object.entries(plan.days).forEach(([day, meals]) => {
+                        const dayCard = document.createElement("div");
+                        dayCard.classList.add("day-card");
+
+                        dayCard.innerHTML = `
+                            <h3 class="day-header">${day}</h3>
+                            ${Object.entries(meals)
+                                .filter(([mealType, details]) => mealType !== "_id")
+                                .map(([mealType, details]) => `
+                                    <div class="meal-card">
+                                        <div class="meal-header">
+                                            <span class="meal-type">${mealType}</span>
+                                            <span class="calories">${details.calories.toFixed(0)} calories</span>
+                                        </div>
+                                        <div class="nutrition-info">
+                                            <div class="nutrient">
+                                                <div class="nutrient-label">Carbs</div>
+                                                <div class="nutrient-value">${details.carbs.toFixed(1)}g</div>
+                                            </div>
+                                            <div class="nutrient">
+                                                <div class="nutrient-label">Protein</div>
+                                                <div class="nutrient-value">${details.protein.toFixed(1)}g</div>
+                                            </div>
+                                            <div class="nutrient">
+                                                <div class="nutrient-label">Fats</div>
+                                                <div class="nutrient-value">${details.fats.toFixed(1)}g</div>
+                                            </div>
+                                        </div>
+                                        <div class="meal-items">
+                                            <ul>
+                                                ${details.items.map(item => `<li>${item}</li>`).join("")}
+                                            </ul>
+                                        </div>
+                                    </div>
+                                `).join("")}
+                        `;
+
+                        daysGrid.appendChild(dayCard);
+                    });
+
+                    planCard.appendChild(daysGrid);
+                    plansContainer.appendChild(planCard);
+                });
+
+            } catch (error) {
+                console.error("Error:", error);
+                plansContainer.innerHTML = "<p>Failed to load meal plans. Please try again later.</p>";
+            }
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>

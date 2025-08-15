@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriAI - Profile</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Add these styles for the edit/save button */
+        .edit-save-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            float: right;
+            margin: 10px;
+        }
+
+        .edit-save-btn:hover {
+            opacity: 0.9;
+        }
+
+        .edit-save-btn.editing {
+            background-color: #2196F3;
+        }
+
+        /* Style for editable inputs */
+        .editable-input {
+            border: 1px solid transparent;
+            background-color: transparent;
+            padding: 5px;
+            width: 100%;
+        }
+
+        .editable-input.editing {
+            border: 1px solid #ccc;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar remains the same -->
+        <nav class="sidebar">
+            <div class="logo">
+                <img src="images\logo1.jpg" alt="NutriAI Logo">
+                <span>NutriAI</span>
+            </div>
+            <ul class="nav-items">
+                <li data-page="index.html" ><i class="fas fa-chart-pie"></i> Overview</li>
+                <li data-page="diet.html" ><i class="fas fa-utensils"></i> My Diet</li>
+                <li data-page="bmr.html" ><i class="fas fa-heartbeat"></i> BMR</li>
+                <li data-page="profile.html" class="active"><i class="fas fa-user"></i> Profile</li>
+                <li data-page="settings.html"><i class="fas fa-cog"></i> Settings</li>
+                <li data-page="help.html"><i class="fas fa-question-circle"></i> Help Center</li>
+            </ul>
+            <div class="logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </div>
+        </nav>
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <!-- <input type="search" placeholder="Search" class="search-bar"> -->
+                <div class="user-actions">
+                    <span class="notification"><i class="fas fa-bell"></i></span>
+                    <span class="more-options"><i class="fas fa-ellipsis-v"></i></span>
+                    
+                </div>
+            </header>
+
+            <div class="content">
+                <h1>Profile</h1>
+                <button id="editSaveBtn" class="edit-save-btn">
+                    Edit Profile
+                </button>
+                <div class="card">
+                    
+                    <h2  class="profile-name" >Thomas Edison</h2>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="email" class="editable-input" value="thomas@example.com" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone:</label>
+                        <input type="tel" id="phone" class="editable-input" value="(60) 12 345 6789" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Birthday:</label>
+                        <input type="date" id="birthday" class="editable-input" value="1992-03-05" readonly>
+                    </div>
+                    <h2>BMR Details</h2>
+                    <div class="form-group">
+                        <label>Height (cm):</label>
+                        <input type="number" id="height" class="editable-input" value="170" min="0" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Weight (kg):</label>
+                        <input type="number" id="weight" class="editable-input" value="60" min="0" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Activity Level:</label>
+                        <select id="activityLevel" class="editable-input" disabled>
+                            <option value="">Select your activity level</option>
+                        <option value="sedentary">Sedentary (Little to no exercise)</option>
+                        <option value="lightly active">Light Activity (1-3 days per week)</option>
+                        <option value="moderately active">Moderate Activity (3-5 days per week)</option>
+                        <option value="very active">Active (6-7 days per week)</option>
+                        <option value="super active">Very Active (Twice per day intense training)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>const editSaveBtn = document.getElementById('editSaveBtn');
+        const inputs = document.querySelectorAll('.editable-input');
+        let isEditing = false;
+        
+        editSaveBtn.addEventListener('click', () => {
+            isEditing = !isEditing;
+        
+            if (isEditing) {
+                // Switch to edit mode
+                editSaveBtn.textContent = 'Save Changes';
+                editSaveBtn.classList.add('editing');
+                inputs.forEach(input => {
+                    // Exclude email field from being editable
+                    if (input.id !== 'email') {
+                        input.removeAttribute('readonly');
+                        input.disabled = false;
+                        input.classList.add('editing');
+                    }
+                });
+            } else {
+                // Validate form before saving
+                if (validateForm()) {
+                    // Save changes and switch back to view mode
+                    editSaveBtn.textContent = 'Edit Profile';
+                    editSaveBtn.classList.remove('editing');
+                    inputs.forEach(input => {
+                        // Exclude email field from being readonly
+                        if (input.id !== 'email') {
+                            input.setAttribute('readonly', true);
+                            input.disabled = input.tagName.toLowerCase() === 'select';
+                            input.classList.remove('editing');
+                        }
+                    });
+        
+                    // Send the updated data to the API
+                    saveChanges();
+                }
+            }
+        });
+        
+        // Validate form inputs
+        function validateForm() {
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const birthday = document.getElementById('birthday').value;
+            const height = document.getElementById('height').value;
+            const weight = document.getElementById('weight').value;
+            const activityLevel = document.getElementById('activityLevel').value;
+        
+            if (!email || !phone || !birthday || !height || !weight || !activityLevel) {
+                alert("All fields are required.");
+                return false;
+            }
+        
+            if (isNaN(height) || height <= 0) {
+                alert("Please enter a valid height.");
+                return false;
+            }
+        
+            if (isNaN(weight) || weight <= 0) {
+                alert("Please enter a valid weight.");
+                return false;
+            }
+        
+            return true;
+        }
+        
+        function saveChanges() {
+            // Collect all form data
+            const formData = {
+                email: document.getElementById('email').value,
+                phoneNumber: document.getElementById('phone').value,
+                dateOfBirth: document.getElementById('birthday').value,
+                height: document.getElementById('height').value,
+                weight: document.getElementById('weight').value,
+                activityLevel: document.getElementById('activityLevel').value,
+                // Add other fields as needed
+            };
+        
+            // Send the data to the API
+            fetch('http://localhost:5550/user/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status) {
+                    alert('User details updated successfully');
+                } else {
+                    alert('Error: ' + data.msg);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while updating your details');
+            });
+        }
+        </script>
+        <script src="script.js"></script>
+
+</body>
+</html>

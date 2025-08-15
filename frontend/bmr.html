@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriAI - BMR Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+    --primary-color: #0066ff;
+    --primary-dark: #0052cc;
+    --secondary-color: #f8f9fa;
+    --text-primary: #2d3748;
+    --text-secondary: #000000;
+    --sidebar-width: 300px;
+    --profile-width: 300px;
+    --white: #ffffff;
+    --border-color: #e2e8f0;
+    --success-color: #48bb78;
+    --warning-color: #ed8936;
+    --danger-color: #f56565;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+body {
+    background-color: var(--secondary-color);
+    color: var(--text-primary);
+}
+
+.dashboard-container {
+    display: flex;
+    height: 1000%;
+
+    /* min-height: 100vh;
+    min-width: 30vh; */
+    
+}
+
+/* Sidebar Styles */
+.sidebar {
+    background-color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #eee;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 40px;
+}
+
+.logo img {
+    width: 30px;
+    height: 30px;
+}
+
+.nav-items {
+    list-style: none;
+}
+
+.nav-items li {
+    padding: 12px 20px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all var(--transition-speed) ease;
+}
+
+.nav-items li:hover {
+    background-color: rgba(0, 102, 255, 0.1);
+}
+
+.nav-items li.active {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.logout {
+    margin-top: auto;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: color var(--transition-speed) ease;
+}
+
+.logout:hover {
+    color: var(--primary-color);
+}
+
+
+/* Main Content Styles */
+.main-content {
+     flex: 1; 
+    margin-left: var(--sidebar-width);
+    margin-right: var(--sidebar-width);
+    padding: 20px;
+}
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.notifications {
+    position: relative;
+    cursor: pointer;
+}
+
+.notifications i {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+
+
+/* Calculator Styles */
+.calculator-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.calculator-card {
+    background: var(--white);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.card-header i {
+    font-size: 2rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+
+input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+}
+
+.gender-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.gender-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    background: var(--white);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.gender-btn:hover {
+    border-color: var(--primary-color);
+}
+
+.gender-btn.active {
+    background: var(--primary-color);
+    color: var(--white);
+    border-color: var(--primary-color);
+}
+
+.calculate-btn {
+    width: 100%;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 0.5rem;
+    background: var(--primary-color);
+    color: var(--white);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.calculate-btn:hover {
+    background: var(--primary-dark);
+}
+
+.results {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.results.hidden {
+    display: none;
+}
+
+.results h3 {
+    margin-bottom: 1rem;
+    color: var(--text-primary);
+}
+
+.results-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.result-card {
+    background: var(--secondary-color);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+}
+
+.result-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.result-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.status-underweight { color: var(--primary-color); }
+.status-healthy { color: var(--success-color); }
+.status-overweight { color: var(--warning-color); }
+.status-obese { color: var(--danger-color); }
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 60px;
+        padding: 1rem 0.5rem;
+    }
+
+    .logo span,
+    .nav-items li span,
+    .logout span {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 60px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .results-grid {
+        grid-template-columns: 1fr;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <img src="images\logo1.jpg" alt="NutriAI Logo">
+                <span>NutriAI</span>
+            </div>
+            <ul class="nav-items">
+                <li data-page="index.html" ><i class="fas fa-chart-pie"></i> Overview</li>
+                <li data-page="diet.html" ><i class="fas fa-utensils"></i> My Diet</li>
+                <li data-page="bmr.html" class="active"><i class="fas fa-heartbeat"></i> BMR</li>
+                <li data-page="profile.html"><i class="fas fa-user"></i> Profile</li>
+                <li data-page="settings.html"><i class="fas fa-cog"></i> Settings</li>
+                <li data-page="help.html"><i class="fas fa-question-circle"></i> Help Center</li>
+            </ul>
+            <div class="logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </div>
+        </nav>
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <h1>BMR Calculator</h1>
+                <div class="user-profile">
+                    <div class="notifications">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                </div>
+            </header>
+
+            <div class="calculator-container">
+                <div class="calculator-card">
+                    <div class="card-header">
+                        <i class="fas fa-calculator"></i>
+                        <h2>Calculate Your BMR & BMI</h2>
+                        <p>Enter your details below to calculate your Basal Metabolic Rate and Body Mass Index</p>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="weight">Weight (kg)</label>
+                            <input type="number" id="weight" placeholder="Enter weight">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="height">Height (cm)</label>
+                            <input type="number" id="height" placeholder="Enter height">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="age">Age (years)</label>
+                            <input type="number" id="age" placeholder="Enter age">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Gender</label>
+                            <div class="gender-buttons">
+                                <button id="male" class="gender-btn active">
+                                    <i class="fas fa-mars"></i> Male
+                                </button>
+                                <button id="female" class="gender-btn">
+                                    <i class="fas fa-venus"></i> Female
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="calculate" class="calculate-btn">
+                        <span class="btn-text">Calculate</span>
+                        <span class="loader"></span>
+                    </button>
+
+                    <div id="results" class="results hidden">
+                        <h3>Your Results</h3>
+                        <div class="results-grid">
+                            <div class="result-card">
+                                <div class="result-label">BMR</div>
+                                <div id="bmr-value" class="result-value">0 kcal/day</div>
+                            </div>
+                            <div class="result-card">
+                                <div class="result-label">BMI</div>
+                                <div id="bmi-value" class="result-value">0</div>
+                            </div>
+                            <div class="result-card">
+                                <div class="result-label">Status</div>
+                                <div id="status-value" class="result-value">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+    <script>
+                // DOM Elements
+        const weightInput = document.getElementById('weight');
+        const heightInput = document.getElementById('height');
+        const ageInput = document.getElementById('age');
+        const maleBtn = document.getElementById('male');
+        const femaleBtn = document.getElementById('female');
+        const calculateBtn = document.getElementById('calculate');
+        const resultsDiv = document.getElementById('results');
+        const bmrValue = document.getElementById('bmr-value');
+        const bmiValue = document.getElementById('bmi-value');
+        const statusValue = document.getElementById('status-value');
+
+        let selectedGender = 'male';
+
+        // BMR Calculation Functions
+        function calculateBMR(weight, height, age, gender) {
+            if (gender.toLowerCase() === "male") {
+                return (10 * weight) + (6.25 * height) - (5 * age) + 5;
+            } else {
+                return (10 * weight) + (6.25 * height) - (5 * age) - 161;
+            }
+        }
+
+        function calculateBMI(weight, height) {
+            return weight / ((height / 100) ** 2);
+        }
+
+        function getHealthStatus(bmi) {
+            if (bmi < 18.5) return "Underweight";
+            if (bmi >= 18.5 && bmi < 24.9) return "Healthy";
+            if (bmi >= 25 && bmi < 29.9) return "Overweight";
+            return "Obese";
+        }
+
+        // Event Listeners
+        maleBtn.addEventListener('click', () => {
+            maleBtn.classList.add('active');
+            femaleBtn.classList.remove('active');
+            selectedGender = 'male';
+        });
+
+        femaleBtn.addEventListener('click', () => {
+            femaleBtn.classList.add('active');
+            maleBtn.classList.remove('active');
+            selectedGender = 'female';
+        });
+
+        calculateBtn.addEventListener('click', () => {
+            const weight = parseFloat(weightInput.value);
+            const height = parseFloat(heightInput.value);
+            const age = parseInt(ageInput.value);
+
+            if (!weight || !height || !age) {
+                alert('Please fill in all fields with valid numbers');
+                return;
+            }
+
+            calculateBtn.disabled = true;
+            calculateBtn.classList.add('loading');
+
+            // Simulate calculation delay
+            setTimeout(() => {
+                const bmr = calculateBMR(weight, height, age, selectedGender);
+                const bmi = calculateBMI(weight, height);
+                const status = getHealthStatus(bmi);
+                
+                bmrValue.textContent = `${Math.round(bmr)} kcal/day`;
+                bmiValue.textContent = bmi.toFixed(2);
+                
+                statusValue.textContent = status;
+                statusValue.className = `result-value status-${status.toLowerCase()}`;
+                
+                resultsDiv.classList.remove('hidden');
+                calculateBtn.disabled = false;
+                calculateBtn.classList.remove('loading');
+            }, 500);
+        });
+
+        // Initialize tooltips and other UI elements
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add any additional initialization code here
+        });
+    </script>
+</body>
+</html>

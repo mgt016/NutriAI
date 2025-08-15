@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join NutriAI - Your Personal Nutrition Assistant</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+ :root {
+    --gradient-start: #2563eb;
+    --gradient-end: #1d4ed8;
+    --primary-color: #000000;
+    --text-color: #2d3436;
+    --border-color: #e5e7eb;
+    --background-color: #f8f9fa;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+    /* min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background-image: url("images/bg image.jpg");
+    justify-content: right;
+    background-color: var(--background-color);
+    padding: 2rem; */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background-image: url("images/bg image.jpg");
+    background-size: cover;
+    background-position: left center;
+    background-repeat: no-repeat;
+    padding-right: 0%;
+}
+
+.signup-card {
+    width: 100%;
+    max-width: 900px;
+    min-height: 600px;
+    background: white;
+    border-radius: 30px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    display: flex;
+    overflow: hidden;
+    position: relative;
+}
+
+.profile-section {
+    width: 35%;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    padding: 3rem 2rem;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+}
+
+.profile-image {
+    width: 150px;
+    height: 150px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    padding: 8px;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.profile-image::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 40px;
+    height: 40px;
+    background: #ffd93d;
+    border-radius: 50%;
+    z-index: -1;
+}
+
+.profile-section h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.profile-section p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+}
+
+.social-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: auto;
+}
+
+.social-link {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.social-link:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: translateY(-3px);
+}
+
+.form-section {
+    flex: 1;
+    padding: 3rem 4rem;
+}
+
+.form-header {
+    margin-bottom: 3rem;
+}
+
+.form-header h1 {
+    font-size: 2rem;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.form-header p {
+    color: #636e72;
+    font-size: 1.1rem;
+}
+
+.form-group {
+    margin-bottom: 2rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 1rem;
+    background: var(--background-color);
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    color: var(--text-color);
+    transition: all 0.3s;
+}
+
+.input-field:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--primary-color);
+}
+
+.error-message {
+    color: #ff4757;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: none;
+}
+
+.btn-signup {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 1rem;
+}
+
+.btn-signup:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(255, 107, 107, 0.2);
+}
+
+.login-link {
+    text-align: center;
+    margin-top: 2rem;
+    color: #636e72;
+}
+
+.login-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 0.5rem;
+}
+
+.login-link a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .signup-card {
+        flex-direction: column;
+    }
+
+    .profile-section {
+        width: 100%;
+        padding: 2rem;
+    }
+
+    .form-section {
+        padding: 2rem;
+    }
+
+    .profile-image {
+        width: 120px;
+        height: 120px;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="signup-card">
+        <div class="profile-section">
+            <div class="profile-image">
+                <img src="images\logo1.jpg" alt="Profile" style="width: 100%; height: 100%; border-radius: 50%;">
+            </div>
+            <h2>Welcome to NutriAI</h2>
+            <p>Your Personal Nutrition Assistant</p>
+            <div class="social-links">
+                <a href="#" class="social-link">
+                    <i class="fab fa-facebook-f" style="color: white;"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-twitter" style="color: white;"></i>
+                </a>
+                <a href="#" class="social-link">
+                    <i class="fab fa-instagram" style="color: white;"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <div class="form-header">
+                <h1>Create Account</h1>
+                <p>Start your journey to better health today</p>
+            </div>
+
+            <form id="signup-form">
+                <div class="form-group">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" class="input-field" required>
+                    <span class="error-message" id="name-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" class="input-field" required>
+                    <span class="error-message" id="email-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" class="input-field" required>
+                    <span class="error-message" id="phone-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" id="dob" class="input-field" required>
+                    <span class="error-message" id="dob-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="input-field" required>
+                    <span class="error-message" id="password-error"></span>
+                </div>
+
+                <button type="submit" class="btn-signup">Create Account</button>
+
+                <p class="login-link">
+                    Already have an account? <a href="login.html">Log in</a>
+                </p>
+            </form>
+        </div>
+    </div>
+    <script src="signup.js"></script>
+</body>
+</html>

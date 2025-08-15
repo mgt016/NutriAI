@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Your Profile - NutriAI</title>
+    <style>
+        :root {
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --error-color: #ef4444;
+    --text-color: #1f2937;
+    --border-color: #e5e7eb;
+    --background-color: #f3f4f6;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+    /* background-color: var(--background-color);
+    background-image: url("images/bg image.jpg");
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center; */
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    background-image: url("images/bg image.jpg");
+    background-size: cover;
+    background-position: left center;
+    background-repeat: no-repeat;
+    padding-right: 0%;
+}
+
+.container {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+}
+
+.details-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 2rem;
+}
+
+.progress-section {
+    margin-bottom: 2rem;
+}
+
+.progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.progress-step {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.progress-step.completed {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.progress-step.active {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.progress-line {
+    flex: 1;
+    height: 2px;
+    background: var(--border-color);
+    margin: 0 1rem;
+}
+
+.progress-labels {
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-color);
+    font-size: 0.875rem;
+}
+
+.details-form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+h2 {
+    color: var(--text-color);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.subtitle {
+    color: #6b7280;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.input-with-unit {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-unit input {
+    width: 100%;
+    padding-right: 3rem;
+}
+
+.unit {
+    position: absolute;
+    right: 1rem;
+    color: #6b7280;
+}
+
+input[type="number"],
+select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.radio-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.radio-option {
+    flex: 1;
+    position: relative;
+    cursor: pointer;
+}
+
+.radio-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.radio-label {
+    display: block;
+    padding: 0.75rem;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+}
+
+.radio-option input[type="radio"]:checked + .radio-label {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.error-message {
+    display: block;
+    color: var(--error-color);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    min-height: 1.25rem;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 0.875rem;
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 1rem;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="details-container">
+            <div class="progress-section">
+                <div class="progress-bar">
+                    <div class="progress-step completed">1</div>
+                    <div class="progress-line"></div>
+                    <div class="progress-step active">2</div>
+                </div>
+                <div class="progress-labels">
+                    <span>Account Created</span>
+                    <span>Profile Details</span>
+                </div>
+            </div>
+
+            <form id="details-form" class="details-form">
+                <h2>Complete Your Profile</h2>
+                <p class="subtitle">Help us personalize your nutrition plan</p>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="height">Height</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="height" required min="50" max="250">
+                            <span class="unit">cm</span>
+                        </div>
+                        <span class="error-message" id="height-error"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="weight">Weight</label>
+                        <div class="input-with-unit">
+                            <input type="number" id="weight" required min="20" max="300">
+                            <span class="unit">kg</span>
+                        </div>
+                        <span class="error-message" id="weight-error"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Gender</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="gender" value="male" required>
+                            <span class="radio-label">Male</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="gender" value="female">
+                            <span class="radio-label">Female</span>
+                        </label>
+                        
+                    </div>
+                    <span class="error-message" id="gender-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="goal">Your Goal</label>
+                    <select id="goal" required>
+                        <option value="">Select your goal</option>
+                        <option value="weight loss">Weight Loss</option>
+                        <option value="muscle gain">Build Muscle</option>
+                        <option value="maintenance">Maintain Weight</option>
+                    </select>
+                    <span class="error-message" id="goal-error"></span>
+                </div>
+
+                <div class="form-group">
+                    <label for="activity">Activity Level</label>
+                    <select id="activity" required>
+                        <option value="">Select your activity level</option>
+                        <option value="sedentary">Sedentary (Little to no exercise)</option>
+                        <option value="lightly active">Light (1-3 days/week)</option>
+                        <option value="moderately active">Moderate (3-5 days/week)</option>
+                        <option value="very active">Active (6-7 days/week)</option>
+                        <option value="super active">Very Active (Professional athlete)</option>
+                    </select>
+                    <span class="error-message" id="activity-error"></span>
+                </div>
+
+                <button type="submit" class="btn-primary">Complete Profile</button>
+            </form>
+        </div>
+    </div>
+    <script src="userdetails.js"></script>
+</body>
+</html>

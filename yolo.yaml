@@ -1,0 +1,13 @@
+path: "C:/Users/josep/Desktop/New folder/mini"  # Ensure correct dataset path format
+
+train: images/train  # Path to training images
+val: images/valid    # Path to validation images
+
+nc: 20  # Number of classes
+
+names: [
+  "Chicken_Curry", "Plain_Omelette", "Spinach_Paneer", "Appam", "Avial", 
+  "Banana_Chips", "Chapati_Roti", "Chocolate_Cake", "Fruit_Salad", "Idli", 
+  "Kulfi", "Marble_Cake", "Masala_Dosa", "Masala_Vada", "Mutton_Biryani", 
+  "Pancake", "Sambar", "Uttapam", "Lemonade", "Rice_Puttu"
+]

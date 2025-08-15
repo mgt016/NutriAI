@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriAI - Settings</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">
+                <img src="images\logo1.jpg" alt="NutriAI Logo">
+                <span>NutriAI</span>
+            </div>
+            <ul class="nav-items">
+                <li data-page="index.html" ><i class="fas fa-chart-pie"></i> Overview</li>
+                <li data-page="diet.html" ><i class="fas fa-utensils"></i> My Diet</li>
+                <li data-page="bmr.html" ><i class="fas fa-heartbeat"></i> BMR</li>
+                <li data-page="profile.html" ><i class="fas fa-user"></i> Profile</li>
+                <li data-page="settings.html" class="active"><i class="fas fa-cog"></i> Settings</li>
+                <li data-page="help.html"><i class="fas fa-question-circle"></i> Help Center</li>
+            </ul>
+            <div class="logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <!-- <input type="search" placeholder="Search" class="search-bar"> -->
+                <div class="user-actions">
+                    <span class="notification"><i class="fas fa-bell"></i></span>
+                    <span class="more-options"><i class="fas fa-ellipsis-v"></i></span>
+                    
+                </div>
+            </header>
+
+            <div class="content">
+                <h1>Settings</h1>
+                <div class="card">
+                    <div class="tabs">
+                       
+                        <button class="tab-btn active" data-tab="password">Password</button>
+                        <button class="tab-btn" data-tab="notification">Notification</button>
+                    </div>
+
+                   
+
+                    <div id="password" class="tab-content active">
+                        <h2>Change Password</h2>
+                        <form>
+                            <div class="form-group">
+                                <label for="current-password">Current Password</label>
+                                <input type="password" id="current-password">
+                            </div>
+                            <div class="form-group">
+                                <label for="new-password">New Password</label>
+                                <input type="password" id="new-password">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm-password">Confirm New Password</label>
+                                <input type="password" id="confirm-password">
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="submit-btn">Change Password</button>
+
+                        </form>
+                    </div>
+
+                    <div id="notification" class="tab-content">
+                        <h2>Notification Settings</h2>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" checked> Email Notifications
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" checked> Push Notifications
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox"> SMS Notifications
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Preferences</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div> 
+    <script>document.addEventListener('DOMContentLoaded', function () {
+        const form = document.querySelector('form');
+        const submitBtn = document.getElementById('submit-btn');
+    
+        form.addEventListener('submit', async function (event) {
+            event.preventDefault(); // Prevent default form submission
+    
+            // Get the form values
+            const currentPassword = document.getElementById('current-password').value;
+            const newPassword = document.getElementById('new-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+    
+            // Simple validation
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                alert("Please fill in all the fields.");
+                return;
+            }
+    
+            if (newPassword !== confirmPassword) {
+                alert("New password and confirm password do not match.");
+                return;
+            }
+    
+            // Disable the button to prevent multiple clicks
+            submitBtn.disabled = true;
+            submitBtn.innerText = "Updating...";
+    
+            // Extract userId from URL
+            const userId = new URLSearchParams(window.location.search).get("userId");
+            if (!userId) {
+                alert("User ID is missing.");
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Change Password";
+                return;
+            }
+    
+            // Prepare data to send to the backend
+            const updatedUser = {
+                userId: userId,
+                currentPassword: currentPassword,
+                newPassword: newPassword
+            };
+    
+            try {
+                // Make the API call to update the password
+                const response = await fetch('http://localhost:5550/user/updatepassword', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updatedUser)
+                });
+    
+                const data = await response.json();
+    
+                if (data.status) {
+                    alert("Password updated successfully!");
+                    window.location.href = `profile.html?userId=${userId}`;
+
+                } else {
+                    alert(data.msg); // Show error message from server response
+                }
+            } catch (error) {
+                console.error("Error updating password:", error);
+                alert("There was an error updating your password. Please try again.");
+            } finally {
+                // Re-enable the button after the request is complete
+                submitBtn.disabled = false;
+                submitBtn.innerText = "Change Password";
+            }
+        });
+    });
+    
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
